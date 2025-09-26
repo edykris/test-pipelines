@@ -27,9 +27,9 @@ class Pipeline:
         self.cursor = None
         self.nlsql_response = ""
 
+        # Valves: semua default bisa diubah dari UI
         self.valves = self.Valves(
             **{
-                "pipelines": ["*"],
                 "DB_HOST": os.getenv("MYSQL_HOST", "10.30.164.243"),
                 "DB_PORT": os.getenv("MYSQL_PORT", "3306"),
                 "DB_USER": os.getenv("MYSQL_USER", "admin"),
@@ -53,7 +53,7 @@ class Pipeline:
 
             self.cursor = self.conn.cursor()
 
-            # Query untuk ambil daftar tabel di database
+            # Query untuk ambil daftar tabel
             self.cursor.execute(
                 """
                 SELECT table_schema, table_name
@@ -93,7 +93,13 @@ class Pipeline:
                     raise
                 await asyncio.sleep(2 ** attempt)
 
-    def pipe(self, user_message: str, model_id: str, messages: List[dict], body: dict) -> Union[str, Generator, Iterator]:
+    def pipe(
+        self,
+        user_message: str,
+        model_id: str,
+        messages: List[dict],
+        body: dict
+    ) -> Union[str, Generator, Iterator]:
         try:
             conn = mysql.connector.connect(
                 host=self.valves.DB_HOST,
