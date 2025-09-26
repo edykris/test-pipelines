@@ -23,6 +23,7 @@ class Pipeline:
     def __init__(self):
         self.name = "MySQL Text→SQL Pipeline"
         self.conn = None
+        self.cur = None
         self.valves = self.Valves(
             **{
                 "pipelines": ["*"],
